@@ -23,16 +23,20 @@ public class Main {
             if (is_player_first) {
                 MyUtil.print_from_system("プレイヤーの手番（黒）");
                 turn_executed |= Strategy.executePlayer(1, board);
+                PrintBoard.simple(board, true);
 
                 MyUtil.print_from_system("コンピューターの手番（白）");
                 turn_executed |= Strategy.executeComputer(2, board);
+                PrintBoard.simple(board, true);
             }
             else {
                 MyUtil.print_from_system("コンピューターの手番（黒）");
                 turn_executed |= Strategy.executeComputer(1, board);
+                PrintBoard.simple(board, true);
 
                 MyUtil.print_from_system("プレイヤーの手番（白）");
                 turn_executed |= Strategy.executePlayer(2, board);
+                PrintBoard.simple(board, true);
             }
 
             if (!turn_executed) {

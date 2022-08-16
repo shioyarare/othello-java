@@ -25,6 +25,15 @@ public class MyUtil {
         System.out.println("system> " + message);
     }
 
+    public static int[][] buildBoard(int[][] board) {
+        var new_board = new int[8][8];
+        for(int y=0; y<8; y++) {
+            for (int x=0; x<8; x++) {
+                new_board[y][x] = board[y][x];
+            }
+        }
+        return new_board;
+    }
     // ゲームの表示をみやすくするため定時間進行を止める
     public static void system_wait() {
         try {
