@@ -32,12 +32,50 @@ public class Main {
         }
     }
 
+    // プレイヤのターン
+    public static boolean players_turn() {
+        return true;
+    }
+
+    // コンピュータのターン
+    public static boolean computers_turn() {
+       return true;
+    }
     public static void main(String[] args) {
         // 手番を決定
         boolean is_player_first = Main.r.nextBoolean();
 
+        // 初期状態の盤面を作成
         var board = initialize_board();
         print_board(board, true);
+
+        int turn_count = 0;
+
+        while (true) {
+            boolean is_player = is_player_first && turn_count % 2 == 0;
+            boolean turn_skipped = true;
+
+            if (is_player) {
+                System.out.println("system> プレイヤのターン");
+                turn_skipped &= players_turn();
+
+                System.out.println("system> コンピュータのターン");
+                turn_skipped &= computers_turn();
+            }
+            else {
+                System.out.println("system> コンピュータのターン");
+                turn_skipped &= computers_turn();
+
+                System.out.println("system> プレイヤのターン");
+                turn_skipped &= players_turn();
+            }
+
+            if (turn_skipped) {
+                // 両プレイヤーがパスした場合には終了
+                System.out.println(">>>ゲーム終了<<<");
+                break;
+            }
+        }
 
     }
 }
