@@ -72,7 +72,7 @@ public class Main {
 
             if (turn_skipped) {
                 // 両プレイヤーがパスした場合には終了
-                System.out.println(">>>ゲーム終了<<<");
+                System.out.println("system> ゲーム終了");
                 break;
             }
         }
