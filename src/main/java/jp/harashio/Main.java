@@ -1,14 +1,68 @@
 package jp.harashio;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 import java.lang.String;
+import jp.harashio.PrintBoard;
 import java.util.stream.Collectors;
 // 0 ... 未配置
 // 1 ... 黒石
 // 2 ... 白石
 public class Main {
+
     public static Random r = new Random();
+
+    public static void print_from_system(String message) {
+        System.out.println("system> " + message);
+    }
+
+    public static List<int[]> search_candidate_pos(int[][] board, int target) {
+        var candidate_pos = new ArrayList<int[]>();
+        int dx[] = {1, 1, 0, -1, -1, -1, 0, 1}, dy[] = {0, 1, 1, 1, 0, -1, -1, -1};
+
+        for (int y=0; y<8; y++) {
+            for (int x=0; x<8; x++) {
+                // 空いていなければそのマスには置けない
+                if (board[y][x] != 0) continue;
+
+                // 空いているマスが実際に置けるかチェック
+                for (int i=0; i<9; i++) {
+                    int nx = x + dx[i], ny = y + dy[i];
+                    if (nx<0 && nx>8 && ny<0 && ny>8) continue; // 範囲外
+                    if (board[ny][nx] == target) continue; // すぐ隣が自身の石だった場合置けない
+
+                    // 隣が敵の石だった場合、その先に自身の石があればおける
+                    while (true) {
+                        nx += dx[i];
+                        ny += dy[i];
+                        if (nx<0 && nx>8 && ny<0 && ny>8) break; // 範囲外
+                        if (board[ny][nx] == target) {
+                            int[] candidate = {x, y};
+                            candidate_pos.add(candidate);
+                            break;
+                        }
+                        else if (board[ny][nx] == 0) break;
+
+                    }
+                }
+            }
+        }
+
+        return candidate_pos;
+    }
+
+    // ゲームの表示をみやすくするため定時間進行を止める
+    public static void system_wait() {
+        try {
+            Thread.sleep(6000);
+        }
+        catch (InterruptedException e) {
+
+        }
+    }
+
     public static int[][] initialize_board() {
         var board = new int[8][8];
         for (int[] row: board) Arrays.fill(row, 0);
@@ -17,37 +71,27 @@ public class Main {
         return board;
     }
 
-    // 最も単純なボードを出力する関数
-    public static void print_board(int[][] board, boolean isVisibleGuide) {
-        int i = 0;
-        if (isVisibleGuide) System.out.println("  a b c d e f g h");
-        for (int[] row: board) {
-            i ++;
-            var row_str = Arrays.stream(row)
-                    .mapToObj(e -> e == 1 ? "\u001b[30;42;1m●" : e == 2 ? "\u001b[97;42;1m●" : "\u001b[30;42m-")
-                    .collect(Collectors.toList());
-            if (isVisibleGuide) System.out.print(Integer.toString(i) + " ");
-            System.out.println(String.join(" ", row_str) + "\u001b[00m");
-            System.out.println("\u001b[00m");
-        }
-    }
+
 
     // プレイヤのターン
-    public static boolean players_turn() {
+    public static boolean players_turn(int[][] board) {
         return true;
     }
 
     // コンピュータのターン
-    public static boolean computers_turn() {
+    public static boolean computers_turn(int[][] board) {
        return true;
     }
+
     public static void main(String[] args) {
         // 手番を決定
         boolean is_player_first = Main.r.nextBoolean();
+        print_from_system( is_player_first ? "あなたは`先手`です。" : "あなたは`後手`です。");
+        system_wait();
 
         // 初期状態の盤面を作成
         var board = initialize_board();
-        print_board(board, true);
+        PrintBoard.simple(board, true);
 
         int turn_count = 0;
 
@@ -57,30 +101,25 @@ public class Main {
 
             // 各プレイヤの操作を実行
             if (is_player) {
-                System.out.println("system> プレイヤのターン");
-                turn_skipped &= players_turn();
-                print_board(board, true);
+                print_from_system("プレイヤーターン");
+                turn_skipped &= players_turn(board);
 
-                System.out.println("system> コンピュータのターン");
-                turn_skipped &= computers_turn();
-                print_board(board, true);
+                print_from_system("コンピュータのターン");
+                turn_skipped &= computers_turn(board);
             }
             else {
-                System.out.println("system> コンピュータのターン");
-                turn_skipped &= computers_turn();
-                print_board(board, true);
+                print_from_system("コンピュータのターン");
+                turn_skipped &= computers_turn(board);
 
-                System.out.println("system> プレイヤのターン");
-                turn_skipped &= players_turn();
-                print_board(board, true);
+                print_from_system("プレイヤーターン");
+                turn_skipped &= players_turn(board);
             }
 
             if (turn_skipped) {
                 // 両プレイヤーがパスした場合には終了
-                System.out.println("system> ゲーム終了");
+                print_from_system("ゲーム終了");
                 break;
             }
         }
-
     }
 }
