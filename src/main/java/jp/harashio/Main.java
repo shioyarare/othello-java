@@ -55,19 +55,24 @@ public class Main {
             boolean is_player = is_player_first && turn_count % 2 == 0;
             boolean turn_skipped = true;
 
+            // 各プレイヤの操作を実行
             if (is_player) {
                 System.out.println("system> プレイヤのターン");
                 turn_skipped &= players_turn();
+                print_board(board, true);
 
                 System.out.println("system> コンピュータのターン");
                 turn_skipped &= computers_turn();
+                print_board(board, true);
             }
             else {
                 System.out.println("system> コンピュータのターン");
                 turn_skipped &= computers_turn();
+                print_board(board, true);
 
                 System.out.println("system> プレイヤのターン");
                 turn_skipped &= players_turn();
+                print_board(board, true);
             }
 
             if (turn_skipped) {
