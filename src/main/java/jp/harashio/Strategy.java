@@ -1,7 +1,9 @@
 package jp.harashio;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class Strategy {
     private static List<int[]> search_candidate_pos(int target, int[][] board) {
@@ -56,6 +58,51 @@ public class Strategy {
     }
 
     public static boolean executePlayer (int target, int[][] board) {
+        // 置ける候補の探索
+        List<int[]> candidates = new ArrayList<int[]>();
+
+        try {
+            candidates = search_candidate_pos(target, board);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+
+        if (candidates.size() == 0) {
+            MyUtil.print_from_system("置ける場所がないためパスが選択されます");
+            return false;
+        }
+
+        // 盤面の出力
+        PrintBoard.with_candidate(board, true, candidates);
+
+        MyUtil.print_from_system("石を置く場所を選択してください 例) player> a 3");
+
+        Scanner scanner = new Scanner(System.in);
+
+        int[] user_choice;
+        while (true) {
+            try {
+                System.out.print("player> ");
+                String[] result = scanner.nextLine().split(" ");
+
+                int x = result[0].charAt(0) - 'a';
+                int y = Integer.parseInt(result[1]) - 1;
+                int[] curr = {x, y};
+                user_choice = curr;
+            }
+            catch (Exception e) {
+                MyUtil.print_from_system("無効な形式です、再度入力してください。");
+                System.out.println(e);
+                continue;
+            }
+            boolean is_valid = false;
+            for(var candidate: candidates) {
+                if (Arrays.equals(candidate, user_choice)) is_valid = true;
+            }
+            if (is_valid) break;
+            MyUtil.print_from_system("その場所には石を置けません。再度入力してください。");
+        }
         return false;
     }
 }
