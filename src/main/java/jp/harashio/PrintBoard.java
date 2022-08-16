@@ -11,15 +11,13 @@ public class PrintBoard {
     private static String black_base = "\u001b[30;42;1m●";
     // 最も単純なボードを出力する関数
     public static void simple(int[][] board, boolean isVisibleGuide) {
-        int i = 0;
         if (isVisibleGuide) System.out.println("  a b c d e f g h");
-        for (int[] row: board) {
-            i ++;
-            var row_str = Arrays.stream(row)
-                    .mapToObj(e -> select(e, white_base, black_base, none_base))
-                    .collect(Collectors.toList());
-            if (isVisibleGuide) System.out.print(Integer.toString(i) + " ");
-            System.out.println(String.join(" ", row_str) + "\u001b[00m");
+        for (int y = 0; y < 8; y++) {
+            if (isVisibleGuide) System.out.print(Integer.toString(y+1) + " ");
+            for (int x = 0; x < 8; x++) {
+                String str = select(board[y][x], white_base, black_base, none_base);
+                System.out.print(str + " ");
+            }
             System.out.println("\u001b[00m");
         }
     }
@@ -33,10 +31,10 @@ public class PrintBoard {
                 int[] tmp_ary = {x, y};
                 for(int[] candidate: candidates) is_include_candidate |= Arrays.equals(tmp_ary, candidate);
 
-                String color = is_include_candidate
+                String str = is_include_candidate
                                 ? select(board[y][x], white_base, black_base, none_candidate)
                                 : select(board[y][x], white_base, black_base, none_base);
-                System.out.print(color + " ");
+                System.out.print(str + " ");
             }
             System.out.println("\u001b[00m");
         }
