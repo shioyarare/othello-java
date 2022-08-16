@@ -5,6 +5,20 @@ import java.util.Random;
 import java.lang.String;
 
 public class MyUtil {
+    public static class Put {
+        Put(int x, int y, int value) {
+            this.x = x;
+            this.y = y;
+            this.value = value;
+        }
+
+        public boolean equals(MyUtil.Put x) {
+            return this.x == x.x && this.y == x.y ? true : false;
+        }
+        public int x;     // x 座標
+        public int y;     // y 座標
+        public int value; // ここに置くことで返せる個数 (0は未入力とする)
+    }
     public static Random r = new Random();
 
     public static void print_from_system(String message) {

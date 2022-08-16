@@ -22,14 +22,14 @@ public class PrintBoard {
         }
     }
 
-    public static void with_candidate(int[][] board, boolean isVisibleGuide, List<int[]> candidates) {
+    public static void with_candidate(int[][] board, boolean isVisibleGuide, List<MyUtil.Put> candidates) {
         if (isVisibleGuide) System.out.println("  a b c d e f g h");
         for (int y = 0; y < 8; y++) {
             if (isVisibleGuide) System.out.print(Integer.toString(y+1) + " ");
             for (int x = 0; x < 8; x++) {
                 boolean is_include_candidate = false;
                 int[] tmp_ary = {x, y};
-                for(int[] candidate: candidates) is_include_candidate |= Arrays.equals(tmp_ary, candidate);
+                for(MyUtil.Put candidate: candidates) is_include_candidate |= candidate.equals(new MyUtil.Put(x, y, 0));
 
                 String str = is_include_candidate
                                 ? select(board[y][x], white_base, black_base, none_candidate)
