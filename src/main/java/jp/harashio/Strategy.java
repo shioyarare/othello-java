@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Strategy {
-    public static List<int[]> search_candidate_pos(int[][] board, int target) {
+    private static List<int[]> search_candidate_pos(int target, int[][] board) {
         var candidate_pos = new ArrayList<int[]>();
         int dx[] = {1, 1, 0, -1, -1, -1, 0, 1}, dy[] = {0, 1, 1, 1, 0, -1, -1, -1};
 
@@ -14,16 +14,16 @@ public class Strategy {
                 if (board[y][x] != 0) continue;
 
                 // 空いているマスが実際に置けるかチェック
-                for (int i=0; i<9; i++) {
+                for (int i=0; i<8; i++) {
                     int nx = x + dx[i], ny = y + dy[i];
-                    if (nx<0 && nx>8 && ny<0 && ny>8) continue; // 範囲外
-                    if (board[ny][nx] == target) continue; // すぐ隣が自身の石だった場合置けない
+                    if (nx<0 || nx>7 || ny<0 || ny>7) continue; // 範囲外
+                    if (board[ny][nx] == target || board[ny][nx] == 0) continue; // すぐ隣が敵の石ではない場合置けない
 
                     // 隣が敵の石だった場合、その先に自身の石があればおける
                     while (true) {
                         nx += dx[i];
                         ny += dy[i];
-                        if (nx<0 && nx>8 && ny<0 && ny>8) break; // 範囲外
+                        if (nx<0 || nx>7 || ny<0 || ny>7) break; // 範囲外
                         if (board[ny][nx] == target) {
                             int[] candidate = {x, y};
                             candidate_pos.add(candidate);
@@ -37,5 +37,31 @@ public class Strategy {
         }
 
         return candidate_pos;
+    }
+
+    private static String store_str (int target) {
+        return target == 1 ? "(黒)" : "(白)";
+    }
+    public static boolean executeComputer (int target, int[][] board) {
+        String stone_str = target == 1 ? "(黒)" : "(白)";
+        MyUtil.print_from_system("コンピュータの手番: " + stone_str);
+
+        // 置ける候補の探索
+        List<int[]> candidates = new ArrayList<int[]>();
+        try {
+            candidates = search_candidate_pos(target, board);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+
+        // 盤面の出力
+        PrintBoard.with_candidate(board, true, candidates);
+
+        return false;
+    }
+
+    public static boolean executePlayer (int target, int[][] board) {
+        return false;
     }
 }

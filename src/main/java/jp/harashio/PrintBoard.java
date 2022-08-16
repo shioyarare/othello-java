@@ -16,7 +16,7 @@ public class PrintBoard {
         for (int[] row: board) {
             i ++;
             var row_str = Arrays.stream(row)
-                    .mapToObj(e -> select_color(e, white_base, black_base, none_base))
+                    .mapToObj(e -> select(e, white_base, black_base, none_base))
                     .collect(Collectors.toList());
             if (isVisibleGuide) System.out.print(Integer.toString(i) + " ");
             System.out.println(String.join(" ", row_str) + "\u001b[00m");
@@ -25,8 +25,6 @@ public class PrintBoard {
     }
 
     public static void with_candidate(int[][] board, boolean isVisibleGuide, List<int[]> candidates) {
-
-
         if (isVisibleGuide) System.out.println("  a b c d e f g h");
         for (int y = 0; y < 8; y++) {
             if (isVisibleGuide) System.out.print(Integer.toString(y+1) + " ");
@@ -36,15 +34,15 @@ public class PrintBoard {
                 for(int[] candidate: candidates) is_include_candidate |= Arrays.equals(tmp_ary, candidate);
 
                 String color = is_include_candidate
-                                ? select_color(board[y][x], white_base, black_base, none_candidate)
-                                : select_color(board[y][x], white_base, black_base, none_base);
-                System.out.print(color + Integer.toString(board[y][x]));
+                                ? select(board[y][x], white_base, black_base, none_candidate)
+                                : select(board[y][x], white_base, black_base, none_base);
+                System.out.print(color + " ");
             }
             System.out.println("\u001b[00m");
         }
     }
 
-    private static String select_color(int target, String white_color, String black_color, String none_color) {
+    private static String select(int target, String white_color, String black_color, String none_color) {
         switch (target) {
             case 1:
                 return black_color;

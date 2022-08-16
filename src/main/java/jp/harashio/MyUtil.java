@@ -2,14 +2,7 @@ package jp.harashio;
 
 import java.util.Arrays;
 import java.util.Random;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Random;
 import java.lang.String;
-import jp.harashio.PrintBoard;
-import java.util.stream.Collectors;
 
 public class MyUtil {
     public static Random r = new Random();
@@ -21,10 +14,10 @@ public class MyUtil {
     // ゲームの表示をみやすくするため定時間進行を止める
     public static void system_wait() {
         try {
-            Thread.sleep(6000);
+            Thread.sleep(3000);
         }
-        catch (InterruptedException e) {
-
+        catch (Exception e) {
+            System.out.println(e);
         }
     }
 

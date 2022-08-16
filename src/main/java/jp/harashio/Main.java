@@ -1,27 +1,11 @@
 package jp.harashio;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Random;
 import java.lang.String;
-import jp.harashio.MyUtil;
-import jp.harashio.PrintBoard;
-import java.util.stream.Collectors;
+
 // 0 ... 未配置
 // 1 ... 黒石
 // 2 ... 白石
 public class Main {
-    // プレイヤのターン
-    public static boolean players_turn(int[][] board) {
-        return true;
-    }
-
-    // コンピュータのターン
-    public static boolean computers_turn(int[][] board) {
-       return true;
-    }
-
     public static void main(String[] args) {
         // 手番を決定
         boolean is_player_first = MyUtil.r.nextBoolean();
@@ -32,29 +16,26 @@ public class Main {
         var board = MyUtil.initialize_board();
         PrintBoard.simple(board, true);
 
-        int turn_count = 0;
-
         while (true) {
-            boolean is_player = is_player_first && turn_count % 2 == 0;
-            boolean turn_skipped = true;
+            boolean turn_executed = false;
 
             // 各プレイヤの操作を実行
-            if (is_player) {
+            if (is_player_first) {
                 MyUtil.print_from_system("プレイヤーターン");
-                turn_skipped &= players_turn(board);
+                turn_executed |= Strategy.executePlayer(1, board);
 
                 MyUtil.print_from_system("コンピュータのターン");
-                turn_skipped &= computers_turn(board);
+                turn_executed |= Strategy.executeComputer(2, board);
             }
             else {
                 MyUtil.print_from_system("コンピュータのターン");
-                turn_skipped &= computers_turn(board);
+                turn_executed |= Strategy.executeComputer(1, board);
 
                 MyUtil.print_from_system("プレイヤーターン");
-                turn_skipped &= players_turn(board);
+                turn_executed |= Strategy.executePlayer(2, board);
             }
 
-            if (turn_skipped) {
+            if (!turn_executed) {
                 // 両プレイヤーがパスした場合には終了
                 MyUtil.print_from_system("ゲーム終了");
                 break;
