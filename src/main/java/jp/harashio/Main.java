@@ -21,17 +21,17 @@ public class Main {
 
             // 各プレイヤの操作を実行
             if (is_player_first) {
-                MyUtil.print_from_system("プレイヤーターン");
+                MyUtil.print_from_system("プレイヤーの手番（黒）");
                 turn_executed |= Strategy.executePlayer(1, board);
 
-                MyUtil.print_from_system("コンピュータのターン");
+                MyUtil.print_from_system("コンピューターの手番（白）");
                 turn_executed |= Strategy.executeComputer(2, board);
             }
             else {
-                MyUtil.print_from_system("コンピュータのターン");
+                MyUtil.print_from_system("コンピューターの手番（黒）");
                 turn_executed |= Strategy.executeComputer(1, board);
 
-                MyUtil.print_from_system("プレイヤーターン");
+                MyUtil.print_from_system("プレイヤーの手番（白）");
                 turn_executed |= Strategy.executePlayer(2, board);
             }
 

@@ -39,13 +39,7 @@ public class Strategy {
         return candidate_pos;
     }
 
-    private static String store_str (int target) {
-        return target == 1 ? "(黒)" : "(白)";
-    }
     public static boolean executeComputer (int target, int[][] board) {
-        String stone_str = target == 1 ? "(黒)" : "(白)";
-        MyUtil.print_from_system("コンピュータの手番: " + stone_str);
-
         // 置ける候補の探索
         List<int[]> candidates = new ArrayList<int[]>();
         try {
