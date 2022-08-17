@@ -3,8 +3,10 @@ package jp.harashio;
 import java.util.Arrays;
 import java.util.Random;
 import java.lang.String;
+import java.util.logging.*;
 
 public class MyUtil {
+    public static final Logger logger = Logger.getLogger("Debug");
     public static class Put {
         Put(int x, int y, int value) {
             this.x = x;
@@ -12,12 +14,8 @@ public class MyUtil {
             this.value = value;
         }
 
-        public boolean is_valid() {
-          return x == -1 || y == -1 ? true : false;
-        }
-
         public boolean equals(MyUtil.Put x) {
-            return this.x == x.x && this.y == x.y ? true : false;
+            return this.x == x.x && this.y == x.y;
         }
         public int x;     // x 座標
         public int y;     // y 座標
@@ -29,12 +27,10 @@ public class MyUtil {
         System.out.println("system> " + message);
     }
 
-    public static int[][] buildBoard(int[][] board) {
+    public static int[][] copy_board(int[][] board) {
         var new_board = new int[8][8];
         for(int y=0; y<8; y++) {
-            for (int x=0; x<8; x++) {
-                new_board[y][x] = board[y][x];
-            }
+            System.arraycopy(board[y], 0, new_board[y], 0, 8);
         }
         return new_board;
     }
@@ -44,7 +40,7 @@ public class MyUtil {
             Thread.sleep(millis);
         }
         catch (Exception e) {
-            System.out.println(e);
+            logger.warning(e.toString());
         }
     }
 

@@ -3,150 +3,81 @@ package jp.harashio;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.*;
+import java.lang.String;
 
 public class Strategy {
     private static int get_enemy (int target) {
         return target == 1 ? 2 : 1;
     }
-    private static final Logger logger = Logger.getLogger("Debug");
     private static List<MyUtil.Put> search_candidate_pos(int target, int[][] board) {
         var candidate_pos = new ArrayList<MyUtil.Put>();
-
         for (int y=0; y<8; y++) {
             for (int x=0; x<8; x++) {
-                // 空いていなければそのマスには置けない
-                if (board[y][x] != 0) continue;
-
-                // 空いているマスが実際に置けるかチェック
-                int rev_num = reverse(board, target, new MyUtil.Put(x, y, 0), false);
-                if (rev_num > 0) {
-                    // その場所に石を置いたとして石が1個以上返る場合置ける
-                    candidate_pos.add(new MyUtil.Put(x, y, rev_num));
-                }
+                if (board[y][x] != 0) continue; // 既に置かれている
+                // 実際に置けるかチェック
+                int rev_num = reverse_control(board, target, new MyUtil.Put(x, y, 0), false);
+                // そこに置いて敵の駒が返せれば置ける場所
+                if (rev_num > 0) { candidate_pos.add(new MyUtil.Put(x, y, rev_num)); }
             }
         }
         return candidate_pos;
     }
 
-    private static int reverse (int[][] board, int target, MyUtil.Put pos, boolean do_reverse) {
-        if (pos.x<0 || pos.x>7 || pos.y<0 || pos.y>7 || board[pos.y][pos.x] != 0 ) return 0;
-        var all_reverse = new ArrayList<MyUtil.Put>();
+    private static int reverse_control(int[][] board, int target, MyUtil.Put pos, boolean do_reverse) {
+        var all_reverse_pos = new ArrayList<MyUtil.Put>();
         int[] dx = {1, 1, 0, -1, -1, -1, 0, 1}, dy = {0, 1, 1, 1, 0, -1, -1, -1};
-        // 返せる候補の探索
+
+        // dfs で裏返せる駒のチェック
         for (int i=0; i<8; i++) {
             var curr_reverse = new ArrayList<MyUtil.Put>();
-            int nx = pos.x, ny = pos.y;
-
-            int k = 0;
+            int nx = pos.x, ny = pos.y, k = 0;
             while (true) {
-                nx += dx[i];
-                ny += dy[i];
+                nx += dx[i]; ny += dy[i];
                 if (nx<0 || nx>7 || ny<0 || ny>7 || board[ny][nx] == 0) break; // 範囲外
                 if (k++ == 0 && board[ny][nx] == target ) break; // すぐ隣が自身の石
+                // 0個以上の裏返せるポイントの確定
                 if (board[ny][nx] == target) {
-                    // ここまで返すことが可能
-                    all_reverse.addAll(curr_reverse);
+                    all_reverse_pos.addAll(curr_reverse);
                     break;
                 }
                 curr_reverse.add(new MyUtil.Put(nx, ny, 0));
             }
         }
         // 実際に返す処理を行う場合
-        try {
-            if (do_reverse) {
-                board[pos.y][pos.x] = target;
-                for (var rev : all_reverse) {
-                    board[rev.y][rev.x] = target;
-                }
+        if (do_reverse) {
+            board[pos.y][pos.x] = target;
+            for (var reverse_pos: all_reverse_pos) {
+                board[reverse_pos.y][reverse_pos.x] = target;
             }
-        }
-        catch (Exception e) {
-            logger.warning(e.toString());
-            System.out.println(pos.y + " : " + pos.x);
         }
         // 返した際に裏返せる個数を返す
-        return all_reverse.size();
+        return all_reverse_pos.size();
     }
 
-    private static int bfs (int target, int[][] board, int depth, int prev_cost) {
-        int cost = Integer.MAX_VALUE;
-        // 敵の動き候補
-        var candidates = search_candidate_pos(get_enemy(target), board);
-        if (depth <= 0 || candidates.size() == 0) {
-            return candidates.size();
-        }
-        if (candidates.size() > prev_cost) {
-            // 前よりも選択肢が多くなってしまったら打ち止め
-            return candidates.size();
-        }
-
-        for (var candidate: candidates) {
-            // 敵の動きをシミュレーション
-            var enemy_board= MyUtil.buildBoard(board);
-            reverse(enemy_board, target, candidate, true);
-
-            // 敵の動きの結果、自身がとれる行動
-            var next_candidates = search_candidate_pos(target, board);
-
-            for (var next_candidate: next_candidates) {
-                var next_board = MyUtil.buildBoard(enemy_board);
-                reverse(next_board, target, next_candidate, true);
-                int next_cost = bfs(target, next_board.clone(), depth-1, cost);
-
-                if (cost > next_cost) {
-                    cost = next_cost;
-                }
-            }
-        }
-        return cost;
+    private static MyUtil.Put execute (int target, int[][] board, List<MyUtil.Put> candidates) {
+        return candidates.get(0);
     }
     public static boolean executeComputer (int target, int[][] board) {
         // 置ける候補の探索
-        List<MyUtil.Put> candidates = new ArrayList<>();
-        try {
-            candidates = search_candidate_pos(target, board);
-        }
-        catch (Exception e){
-            logger.warning(e.toString());
-        }
+        List<MyUtil.Put> candidates = search_candidate_pos(target, board);
 
         if (candidates.size() == 0) {
             MyUtil.print_from_system("置ける場所がないためパスが選択されます");
             return false;
         }
 
-        // 幅優先探索で相手が置けるマスが最小になるようにする
-        int depth = 2;
-        MyUtil.Put sel = candidates.get(0);
-        int cost = Integer.MAX_VALUE;       // その選択をとった場合のコスト
-        for (var candidate: candidates) {
-            var next_board = MyUtil.buildBoard(board);
-            reverse(next_board, target, candidate, true);
-            int next_cost = bfs(target, next_board, depth, cost);
-            if (cost > next_cost) {
-                sel  = candidate;
-            }
-            break;
-        }
+        // 配置地点の決定
+        MyUtil.Put sel = execute(target, board, candidates);
 
-        char char_x = (char) ('a' + sel.x);
-        MyUtil.print_from_system(char_x + " " + sel.y);
-        reverse(board, target, sel, true);
+        MyUtil.print_from_system( (char) ('a' + sel.x) + " " + (sel.y + 1));
+        reverse_control(board, target, sel, true);
         PrintBoard.with_all(board, search_candidate_pos(get_enemy(target), board), sel);
         return true;
     }
 
-    public static boolean executePlayer (int target, int[][] board, boolean print_candidate) {
+    public static boolean executePlayer (int target, int[][] board) {
         // 置ける候補の探索
-        List<MyUtil.Put> candidates = new ArrayList<>();
-
-        try {
-            candidates = search_candidate_pos(target, board);
-        }
-        catch (Exception e){
-            logger.warning(e.toString());
-        }
+        List<MyUtil.Put> candidates = search_candidate_pos(target, board);
 
         if (candidates.size() == 0) {
             MyUtil.print_from_system("置ける場所がないためパスが選択されます");
@@ -154,12 +85,13 @@ public class Strategy {
         }
 
         // 候補地点の表示
-        if (print_candidate) PrintBoard.with_candidate(board, candidates);
+        PrintBoard.with_candidate(board, candidates);
 
         MyUtil.print_from_system("石を置く場所を選択してください 例) player> a 3");
 
         Scanner scanner = new Scanner(System.in);
 
+        // ユーザとの対話により駒を置く地点の決定
         MyUtil.Put user_choice;
         while (true) {
             try {
@@ -172,7 +104,7 @@ public class Strategy {
             }
             catch (Exception e) {
                 MyUtil.print_from_system("無効な形式です、再度入力してください。");
-                logger.warning(e.toString());
+                MyUtil.logger.warning(e.toString());
                 continue;
             }
             boolean is_valid = false;
@@ -184,7 +116,7 @@ public class Strategy {
         }
 
         // 返す
-        reverse(board, target, user_choice, true);
+        reverse_control(board, target, user_choice, true);
         PrintBoard.with_select(board, user_choice);
         return true;
     }
