@@ -10,7 +10,7 @@ public class Main {
         // 手番を決定
         boolean is_player_first = MyUtil.r.nextBoolean();
         MyUtil.print_from_system( is_player_first ? "あなたは`先手`です。" : "あなたは`後手`です。");
-        MyUtil.system_wait();
+        MyUtil.system_wait(3000);
 
         // 初期状態の盤面を作成
         var board = MyUtil.initialize_board();

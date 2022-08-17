@@ -12,6 +12,10 @@ public class MyUtil {
             this.value = value;
         }
 
+        public boolean is_valid() {
+          return x == -1 || y == -1 ? true : false;
+        }
+
         public boolean equals(MyUtil.Put x) {
             return this.x == x.x && this.y == x.y ? true : false;
         }
@@ -35,9 +39,9 @@ public class MyUtil {
         return new_board;
     }
     // ゲームの表示をみやすくするため定時間進行を止める
-    public static void system_wait() {
+    public static void system_wait(int millis) {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(millis);
         }
         catch (Exception e) {
             System.out.println(e);

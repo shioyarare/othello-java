@@ -30,6 +30,7 @@ public class Strategy {
     }
 
     private static int reverse (int[][] board, int target, MyUtil.Put pos, boolean do_reverse) {
+        if (pos.x<0 || pos.x>7 || pos.y<0 || pos.y>7 || board[pos.y][pos.x] != 0 ) return 0;
         var all_reverse = new ArrayList<MyUtil.Put>();
         int[] dx = {1, 1, 0, -1, -1, -1, 0, 1}, dy = {0, 1, 1, 1, 0, -1, -1, -1};
         // 返せる候補の探索
@@ -52,12 +53,17 @@ public class Strategy {
             }
         }
         // 実際に返す処理を行う場合
-        if (do_reverse) {
-            board[pos.y][pos.x] = target;
-            for (var rev : all_reverse) {
-
-                board[rev.y][rev.x] = target;
+        try {
+            if (do_reverse) {
+                board[pos.y][pos.x] = target;
+                for (var rev : all_reverse) {
+                    board[rev.y][rev.x] = target;
+                }
             }
+        }
+        catch (Exception e) {
+            logger.warning(e.toString());
+            System.out.println(pos.y + " : " + pos.x);
         }
         // 返した際に裏返せる個数を返す
         return all_reverse.size();
@@ -111,8 +117,8 @@ public class Strategy {
         }
 
         // 幅優先探索で相手が置けるマスが最小になるようにする
-        int depth = 7;
-        MyUtil.Put sel = new MyUtil.Put(-1, -1, -1);
+        int depth = 2;
+        MyUtil.Put sel = candidates.get(0);
         int cost = Integer.MAX_VALUE;       // その選択をとった場合のコスト
         for (var candidate: candidates) {
             var next_board = MyUtil.buildBoard(board);
@@ -124,6 +130,8 @@ public class Strategy {
             break;
         }
 
+        char char_x = (char) ('a' + sel.x);
+        MyUtil.print_from_system(sel.x + " " + sel.y);
         reverse(board, target, sel, true);
         return true;
     }
