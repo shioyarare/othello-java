@@ -1,15 +1,15 @@
 package jp.harashio;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.time.LocalDateTime;
+import java.util.logging.*;
+
 public class Strategy {
     private static int get_enemy (int target) {
         return target == 1 ? 2 : 1;
     }
-
+    private static final Logger logger = Logger.getLogger("Debug");
     private static List<MyUtil.Put> search_candidate_pos(int target, int[][] board) {
         var candidate_pos = new ArrayList<MyUtil.Put>();
 
@@ -30,11 +30,11 @@ public class Strategy {
     }
 
     private static int reverse (int[][] board, int target, MyUtil.Put pos, boolean do_reverse) {
-        List<MyUtil.Put> all_reverse = new ArrayList<MyUtil.Put>();
-        int dx[] = {1, 1, 0, -1, -1, -1, 0, 1}, dy[] = {0, 1, 1, 1, 0, -1, -1, -1};
+        var all_reverse = new ArrayList<MyUtil.Put>();
+        int[] dx = {1, 1, 0, -1, -1, -1, 0, 1}, dy = {0, 1, 1, 1, 0, -1, -1, -1};
         // 返せる候補の探索
         for (int i=0; i<8; i++) {
-            List<MyUtil.Put> curr_reverse = new ArrayList<MyUtil.Put>();
+            var curr_reverse = new ArrayList<MyUtil.Put>();
             int nx = pos.x, ny = pos.y;
 
             int k = 0;
@@ -63,15 +63,14 @@ public class Strategy {
         return all_reverse.size();
     }
 
-    private static int bfs (int target, int[][] board, int depth, int prevcost) {
+    private static int bfs (int target, int[][] board, int depth, int prev_cost) {
         int cost = Integer.MAX_VALUE;
-        MyUtil.Put sel;
         // 敵の動き候補
         var candidates = search_candidate_pos(get_enemy(target), board);
         if (depth <= 0 || candidates.size() == 0) {
             return candidates.size();
         }
-        if (candidates.size() > prevcost) {
+        if (candidates.size() > prev_cost) {
             // 前よりも選択肢が多くなってしまったら打ち止め
             return candidates.size();
         }
@@ -91,7 +90,6 @@ public class Strategy {
 
                 if (cost > next_cost) {
                     cost = next_cost;
-                    sel  = candidate;
                 }
             }
         }
@@ -99,12 +97,12 @@ public class Strategy {
     }
     public static boolean executeComputer (int target, int[][] board) {
         // 置ける候補の探索
-        List<MyUtil.Put> candidates = new ArrayList<MyUtil.Put>();
+        List<MyUtil.Put> candidates = new ArrayList<>();
         try {
             candidates = search_candidate_pos(target, board);
         }
         catch (Exception e){
-            System.out.println(e);
+            logger.warning(e.toString());
         }
 
         if (candidates.size() == 0) {
@@ -121,7 +119,6 @@ public class Strategy {
             reverse(next_board, target, candidate, true);
             int next_cost = bfs(target, next_board, depth, cost);
             if (cost > next_cost) {
-                cost = next_cost;
                 sel  = candidate;
             }
             break;
@@ -133,13 +130,13 @@ public class Strategy {
 
     public static boolean executePlayer (int target, int[][] board) {
         // 置ける候補の探索
-        List<MyUtil.Put> candidates = new ArrayList<MyUtil.Put>();
+        List<MyUtil.Put> candidates = new ArrayList<>();
 
         try {
             candidates = search_candidate_pos(target, board);
         }
         catch (Exception e){
-            System.out.println(e);
+            logger.warning(e.toString());
         }
 
         if (candidates.size() == 0) {
@@ -162,12 +159,11 @@ public class Strategy {
 
                 int x = result[0].charAt(0) - 'a';
                 int y = Integer.parseInt(result[1]) - 1;
-                int[] curr = {x, y};
                 user_choice = new MyUtil.Put(x, y, 0);
             }
             catch (Exception e) {
                 MyUtil.print_from_system("無効な形式です、再度入力してください。");
-                System.out.println(e);
+                logger.warning(e.toString());
                 continue;
             }
             boolean is_valid = false;

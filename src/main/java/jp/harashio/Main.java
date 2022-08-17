@@ -17,12 +17,12 @@ public class Main {
         PrintBoard.simple(board, true);
 
         while (true) {
-            boolean turn_executed = false;
+            boolean turn_executed;
 
             // 各プレイヤの操作を実行
             if (is_player_first) {
                 MyUtil.print_from_system("プレイヤーの手番（黒）");
-                turn_executed |= Strategy.executePlayer(1, board);
+                turn_executed = Strategy.executePlayer(1, board);
                 PrintBoard.simple(board, true);
 
                 MyUtil.print_from_system("コンピューターの手番（白）");
@@ -31,7 +31,7 @@ public class Main {
             }
             else {
                 MyUtil.print_from_system("コンピューターの手番（黒）");
-                turn_executed |= Strategy.executeComputer(1, board);
+                turn_executed = Strategy.executeComputer(1, board);
                 PrintBoard.simple(board, true);
 
                 MyUtil.print_from_system("プレイヤーの手番（白）");
