@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-
+import java.time.LocalDateTime;
 public class Strategy {
     private static int get_enemy (int target) {
         return target == 1 ? 2 : 1;
@@ -63,12 +63,16 @@ public class Strategy {
         return all_reverse.size();
     }
 
-    private static int bfs (int target, int[][] board, int depth) {
+    private static int bfs (int target, int[][] board, int depth, int prevcost) {
         int cost = Integer.MAX_VALUE;
         MyUtil.Put sel;
         // 敵の動き候補
         var candidates = search_candidate_pos(get_enemy(target), board);
         if (depth <= 0 || candidates.size() == 0) {
+            return candidates.size();
+        }
+        if (candidates.size() > prevcost) {
+            // 前よりも選択肢が多くなってしまったら打ち止め
             return candidates.size();
         }
 
@@ -83,7 +87,7 @@ public class Strategy {
             for (var next_candidate: next_candidates) {
                 var next_board = MyUtil.buildBoard(enemy_board);
                 reverse(next_board, target, next_candidate, true);
-                int next_cost = bfs(target, next_board.clone(), depth-1);
+                int next_cost = bfs(target, next_board.clone(), depth-1, cost);
 
                 if (cost > next_cost) {
                     cost = next_cost;
@@ -109,13 +113,13 @@ public class Strategy {
         }
 
         // 幅優先探索で相手が置けるマスが最小になるようにする
-        int depth = 3;
+        int depth = 7;
         MyUtil.Put sel = new MyUtil.Put(-1, -1, -1);
         int cost = Integer.MAX_VALUE;       // その選択をとった場合のコスト
         for (var candidate: candidates) {
             var next_board = MyUtil.buildBoard(board);
             reverse(next_board, target, candidate, true);
-            int next_cost = bfs(target, next_board, depth);
+            int next_cost = bfs(target, next_board, depth, cost);
             if (cost > next_cost) {
                 cost = next_cost;
                 sel  = candidate;

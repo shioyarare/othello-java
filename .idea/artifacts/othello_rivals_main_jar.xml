@@ -2,6 +2,9 @@
   <artifact type="jar" name="othello_rivals.main:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/othello_rivals_main_jar</output-path>
     <root id="archive" name="othello_rivals.main.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/build/resources/main/META-INF/MANIFEST.MF" />
+      </element>
       <element id="module-output" name="othello_rivals.main" />
     </root>
   </artifact>
