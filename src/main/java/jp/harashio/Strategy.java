@@ -133,7 +133,7 @@ public class Strategy {
         char char_x = (char) ('a' + sel.x);
         MyUtil.print_from_system(char_x + " " + sel.y);
         reverse(board, target, sel, true);
-        PrintBoard.with_mixed(board, search_candidate_pos(get_enemy(target), board), sel);
+        PrintBoard.with_all(board, search_candidate_pos(get_enemy(target), board), sel);
         return true;
     }
 

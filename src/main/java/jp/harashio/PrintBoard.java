@@ -58,7 +58,7 @@ public class PrintBoard {
         }
     }
 
-    public static void with_mixed(int[][] board, List<MyUtil.Put> candidates, MyUtil.Put sel) {
+    public static void with_all(int[][] board, List<MyUtil.Put> candidates, MyUtil.Put sel) {
         System.out.println("  a b c d e f g h");
         for (int y = 0; y < 8; y++) {
             System.out.print(y + 1 + " ");
