@@ -133,10 +133,11 @@ public class Strategy {
         char char_x = (char) ('a' + sel.x);
         MyUtil.print_from_system(sel.x + " " + sel.y);
         reverse(board, target, sel, true);
+        PrintBoard.with_mixed(board, true, search_candidate_pos(get_enemy(target), board), sel);
         return true;
     }
 
-    public static boolean executePlayer (int target, int[][] board) {
+    public static boolean executePlayer (int target, int[][] board, boolean print_candidate) {
         // 置ける候補の探索
         List<MyUtil.Put> candidates = new ArrayList<>();
 
@@ -152,8 +153,8 @@ public class Strategy {
             return false;
         }
 
-        // 盤面の出力
-        PrintBoard.with_candidate(board, true, candidates);
+        // 候補地点の表示
+        if (print_candidate) PrintBoard.with_candidate(board, true, candidates);
 
         MyUtil.print_from_system("石を置く場所を選択してください 例) player> a 3");
 
@@ -184,6 +185,7 @@ public class Strategy {
 
         // 返す
         reverse(board, target, user_choice, true);
+        PrintBoard.with_select(board, true, user_choice);
         return true;
     }
 }

@@ -16,34 +16,34 @@ public class Main {
         var board = MyUtil.initialize_board();
         PrintBoard.simple(board, true);
 
+        int turn_num = 0; // 何ターン進んだか
         while (true) {
             boolean turn_executed;
 
             // 各プレイヤの操作を実行
             if (is_player_first) {
+                // プレイヤーから始まる場合は候補地点の表示
                 MyUtil.print_from_system("プレイヤーの手番（黒）");
-                turn_executed = Strategy.executePlayer(1, board);
-                PrintBoard.simple(board, true);
+                turn_executed = Strategy.executePlayer(1, board, turn_num == 0);
 
                 MyUtil.print_from_system("コンピューターの手番（白）");
                 turn_executed |= Strategy.executeComputer(2, board);
-                PrintBoard.simple(board, true);
             }
             else {
                 MyUtil.print_from_system("コンピューターの手番（黒）");
                 turn_executed = Strategy.executeComputer(1, board);
-                PrintBoard.simple(board, true);
 
                 MyUtil.print_from_system("プレイヤーの手番（白）");
-                turn_executed |= Strategy.executePlayer(2, board);
-                PrintBoard.simple(board, true);
+                turn_executed |= Strategy.executePlayer(2, board, false);
             }
 
             if (!turn_executed) {
                 // 両プレイヤーがパスした場合には終了
                 MyUtil.print_from_system("ゲーム終了");
+                PrintBoard.simple(board, true);
                 break;
             }
+            turn_num++;
         }
     }
 }
