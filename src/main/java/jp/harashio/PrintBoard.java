@@ -10,10 +10,10 @@ public class PrintBoard {
     private static final String black_base = "\u001b[30;42m●";
     private static final String black_select_base = "\u001b[30;45m●";
     // 最も単純なボードを出力する関数
-    public static void simple(int[][] board, boolean isVisibleGuide) {
-        if (isVisibleGuide) System.out.println("  a b c d e f g h");
+    public static void simple(int[][] board) {
+        System.out.println("  a b c d e f g h");
         for (int y = 0; y < 8; y++) {
-            if (isVisibleGuide) System.out.print(y + 1 + " ");
+            System.out.print(y + 1 + " ");
             for (int x = 0; x < 8; x++) {
                 String str = select_base(board[y][x], none_base);
                 System.out.print(str + " ");
@@ -22,10 +22,10 @@ public class PrintBoard {
         }
     }
 
-    public static void with_select(int[][] board, boolean isVisibleGuide, MyUtil.Put sel) {
-        if (isVisibleGuide) System.out.println("  a b c d e f g h");
+    public static void with_select(int[][] board, MyUtil.Put sel) {
+        System.out.println("  a b c d e f g h");
         for (int y = 0; y < 8; y++) {
-            if (isVisibleGuide) System.out.print(y + 1 + " ");
+            System.out.print(y + 1 + " ");
             for (int x = 0; x < 8; x++) {
 
                 String str = sel.x == x && sel.y == y
@@ -37,10 +37,10 @@ public class PrintBoard {
         }
     }
 
-    public static void with_candidate(int[][] board, boolean isVisibleGuide, List<MyUtil.Put> candidates) {
-        if (isVisibleGuide) System.out.println("  a b c d e f g h");
+    public static void with_candidate(int[][] board, List<MyUtil.Put> candidates) {
+        System.out.println("  a b c d e f g h");
         for (int y = 0; y < 8; y++) {
-            if (isVisibleGuide) System.out.print(y + 1 + " ");
+            System.out.print(y + 1 + " ");
             for (int x = 0; x < 8; x++) {
                 boolean is_include_candidate = false;
                 for(MyUtil.Put candidate: candidates) is_include_candidate |= candidate.equals(new MyUtil.Put(x, y, 0));
@@ -54,10 +54,10 @@ public class PrintBoard {
         }
     }
 
-    public static void with_mixed(int[][] board, boolean isVisibleGuide, List<MyUtil.Put> candidates, MyUtil.Put sel) {
-        if (isVisibleGuide) System.out.println("  a b c d e f g h");
+    public static void with_mixed(int[][] board, List<MyUtil.Put> candidates, MyUtil.Put sel) {
+        System.out.println("  a b c d e f g h");
         for (int y = 0; y < 8; y++) {
-            if (isVisibleGuide) System.out.print(y + 1 + " ");
+            System.out.print(y + 1 + " ");
             for (int x = 0; x < 8; x++) {
                 boolean is_include_candidate = false;
                 for(MyUtil.Put candidate: candidates) is_include_candidate |= candidate.equals(new MyUtil.Put(x, y, 0));

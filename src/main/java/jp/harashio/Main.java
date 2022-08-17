@@ -14,7 +14,7 @@ public class Main {
 
         // 初期状態の盤面を作成
         var board = MyUtil.initialize_board();
-        PrintBoard.simple(board, true);
+        PrintBoard.simple(board);
 
         int turn_num = 0; // 何ターン進んだか
         while (true) {
@@ -40,7 +40,7 @@ public class Main {
             if (!turn_executed) {
                 // 両プレイヤーがパスした場合には終了
                 MyUtil.print_from_system("ゲーム終了");
-                PrintBoard.simple(board, true);
+                PrintBoard.simple(board);
                 break;
             }
             turn_num++;

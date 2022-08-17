@@ -131,9 +131,9 @@ public class Strategy {
         }
 
         char char_x = (char) ('a' + sel.x);
-        MyUtil.print_from_system(sel.x + " " + sel.y);
+        MyUtil.print_from_system(char_x + " " + sel.y);
         reverse(board, target, sel, true);
-        PrintBoard.with_mixed(board, true, search_candidate_pos(get_enemy(target), board), sel);
+        PrintBoard.with_mixed(board, search_candidate_pos(get_enemy(target), board), sel);
         return true;
     }
 
@@ -154,7 +154,7 @@ public class Strategy {
         }
 
         // 候補地点の表示
-        if (print_candidate) PrintBoard.with_candidate(board, true, candidates);
+        if (print_candidate) PrintBoard.with_candidate(board, candidates);
 
         MyUtil.print_from_system("石を置く場所を選択してください 例) player> a 3");
 
@@ -185,7 +185,7 @@ public class Strategy {
 
         // 返す
         reverse(board, target, user_choice, true);
-        PrintBoard.with_select(board, true, user_choice);
+        PrintBoard.with_select(board, user_choice);
         return true;
     }
 }
